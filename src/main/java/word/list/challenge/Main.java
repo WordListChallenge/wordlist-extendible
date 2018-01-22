@@ -19,6 +19,7 @@ public class Main {
   private static final int DEFAULT_LENGTH = 6;
 
   @CommandLineArguments(
+      ignoreDashes = true,
       programName = "wordlist",
       missionStatement = "write dictionary words of given length as concatenations")
   abstract static class Args {

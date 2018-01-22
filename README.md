@@ -4,10 +4,23 @@
 
         mvn clean package
 
+* Viewing the online help:
+
+        java -jar target/wordlist.jar --help
+
 * Splitting 6-letter words (default):
 
         java -jar target/wordlist.jar src/test/data/wordlist_utf8.txt
 
 * Splitting 5-letter words:
 
-        java -jar target/wordlist.jar -l5 src/test/data/wordlist_utf8.txt
+        java -jar target/wordlist.jar -n5 src/test/data/wordlist_utf8.txt
+
+* Writing to file, instead of stdout:
+
+        java -jar target/wordlist.jar src/test/data/wordlist_utf8.txt output.txt
+
+* Reading from stdin:
+
+        echo -e "foo\nbar\nfoobar" | java -jar target/wordlist.jar -
+

@@ -1,18 +1,15 @@
 package word.list.challenge;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import net.jbock.*;
+
+import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import net.jbock.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Main {
 
@@ -30,7 +27,7 @@ public class Main {
         "A single dash '-' denotes standard in.",
         "Any other token will be interpreted as a file name."
     })
-    abstract String source();
+    abstract Optional<String> source();
 
     @Positional
     @Description({"Output stream for writing.",
@@ -46,23 +43,40 @@ public class Main {
         "Defaults to 6"})
     abstract OptionalInt length();
 
-    BufferedReader in() throws IOException {
-      if ("-".equals(source())) {
-        return new BufferedReader(new InputStreamReader(System.in));
+    @LongName("input-charset")
+    @Description({"The charset of the input dictionary.",
+        "Defaults to UTF-8."})
+    abstract Optional<String> inputCharset();
+
+    @LongName("output-charset")
+    @Description({"The charset of the output stream.",
+        "Defaults to UTF-8."})
+    abstract Optional<String> outputCharset();
+
+    @LongName("list-charsets")
+    @Description("List available charsets.")
+    abstract boolean charsets();
+
+    Reader in() throws IOException {
+      Charset charset = Charset.forName(inputCharset().orElse(UTF_8.toString()));
+      if (isStdin()) {
+        return new InputStreamReader(System.in, charset);
       }
-      return new BufferedReader(new FileReader(Paths.get(source()).toFile()));
+      return new InputStreamReader(new FileInputStream(
+          Paths.get(source().orElse("-")).toFile()), charset);
     }
 
-    BufferedWriter out() throws IOException {
+    private boolean isStdin() {
+      return source().orElse("-").equals("-");
+    }
+
+    Writer out() throws IOException {
+      Charset charset = Charset.forName(outputCharset().orElse(UTF_8.toString()));
       String out = output().orElse("-");
       if ("-".equals(out)) {
-        return new BufferedWriter(new OutputStreamWriter(System.out));
+        return new OutputStreamWriter(System.out, charset);
       }
-      return new BufferedWriter(new FileWriter(Paths.get(out).toFile()));
-    }
-
-    int len() {
-      return length().orElse(DEFAULT_LENGTH);
+      return new OutputStreamWriter(new FileOutputStream(Paths.get(out).toFile()), charset);
     }
   }
 
@@ -72,23 +86,24 @@ public class Main {
   }
 
   private static void run(Args args) {
-    Parser parser = new Parser(args.len());
-    try (BufferedReader in = args.in();
-         PrintWriter out = new PrintWriter(args.out())) {
+    if (args.charsets()) {
+      showCharsets();
+      return;
+    }
+    Parser parser = new Parser(args.length().orElse(DEFAULT_LENGTH));
+    try (BufferedReader in = new BufferedReader(args.in());
+         PrintWriter out = new PrintWriter(new BufferedWriter(args.out()))) {
       ParsedList parsed = parser.parse(in);
-      for (String candidate : parsed.getCandidates()) {
-        for (int i = 0; i < args.len() - 1; i++) {
-          String head = candidate.substring(0, i);
-          if (parsed.contains(head)) {
-            String tail = candidate.substring(i);
-            if (parsed.contains(tail)) {
-              out.format("%s + %s => %s\n", head, tail, candidate);
-            }
-          }
-        }
-      }
+      parsed.compositions().forEach(composition -> composition.print(out));
     } catch (IOException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private static void showCharsets() {
+    Map<String, Charset> cs = Charset.availableCharsets();
+    for (Map.Entry<String, Charset> e : cs.entrySet()) {
+      System.out.printf("%s%n", e.getKey());
     }
   }
 }

@@ -24,3 +24,6 @@
 
         echo -e "foo\nbar\nfoobar" | java -jar target/wordlist.jar -
 
+* Using a different input encoding:
+
+        java -jar target/wordlist.jar --input-charset=ISO-8859-1 src/test/data/wordlist.txt

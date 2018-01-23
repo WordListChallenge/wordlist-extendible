@@ -23,11 +23,10 @@ public class Parser {
       int len = line.length();
       if (len == this.length) {
         candidates.add(line);
-      } else if (len > 0 && len < this.length) {
+      } else if (len < this.length) {
         fragments.add(line);
-      } else {
       }
     }
-    return new ParsedList(candidates, fragments);
+    return new ParsedList(candidates, fragments, length);
   }
 }

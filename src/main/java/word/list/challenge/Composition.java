@@ -1,8 +1,5 @@
 package word.list.challenge;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 public class Composition {
 
   private final String head;
@@ -21,13 +18,7 @@ public class Composition {
     return tail;
   }
 
-  public void print(PrintWriter out) {
-    out.format("%s + %s => %s%s\n", head, tail, head, tail);
-  }
-
   public String toString() {
-    StringWriter writer = new StringWriter();
-    print(new PrintWriter(writer));
-    return writer.toString();
+    return String.format("%s + %s => %s%s", head, tail, head, tail);
   }
 }

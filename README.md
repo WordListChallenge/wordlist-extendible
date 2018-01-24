@@ -10,15 +10,15 @@
 
 * Splitting 6-letter words (default):
 
-        java -jar target/wordlist.jar src/test/data/wordlist_utf8.txt
+        java -jar target/wordlist.jar testdata/wordlist_utf8.txt
 
 * Splitting 5-letter words:
 
-        java -jar target/wordlist.jar -n5 src/test/data/wordlist_utf8.txt
+        java -jar target/wordlist.jar -n5 testdata/wordlist_utf8.txt
 
 * Writing to file, instead of stdout:
 
-        java -jar target/wordlist.jar src/test/data/wordlist_utf8.txt output.txt
+        java -jar target/wordlist.jar testdata/wordlist_utf8.txt output.txt
 
 * Reading from stdin:
 
@@ -26,4 +26,4 @@
 
 * Using a different input encoding:
 
-        java -jar target/wordlist.jar --input-charset=ISO-8859-1 src/test/data/wordlist.txt
+        java -jar target/wordlist.jar --input-charset=ISO-8859-1 testdata/wordlist.txt

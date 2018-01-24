@@ -1,15 +1,26 @@
 package word.list.challenge;
 
-import net.jbock.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+import net.jbock.CommandLineArguments;
+import net.jbock.Description;
+import net.jbock.LongName;
+import net.jbock.Positional;
+import net.jbock.ShortName;
 
 public class Main {
 
@@ -58,7 +69,7 @@ public class Main {
     abstract boolean charsets();
 
     Reader in() throws IOException {
-      Charset charset = Charset.forName(inputCharset().orElse(UTF_8.toString()));
+      Charset charset = inputCharset().map(Charset::forName).orElse(UTF_8);
       if (isStdin()) {
         return new InputStreamReader(System.in, charset);
       }
@@ -71,7 +82,7 @@ public class Main {
     }
 
     Writer out() throws IOException {
-      Charset charset = Charset.forName(outputCharset().orElse(UTF_8.toString()));
+      Charset charset = outputCharset().map(Charset::forName).orElse(UTF_8);
       String out = output().orElse("-");
       if ("-".equals(out)) {
         return new OutputStreamWriter(System.out, charset);
@@ -90,20 +101,16 @@ public class Main {
       showCharsets();
       return;
     }
-    Parser parser = new Parser(args.length().orElse(DEFAULT_LENGTH));
+    CompositionFinder compositionFinder = new CompositionFinder(args.length().orElse(DEFAULT_LENGTH));
     try (BufferedReader in = new BufferedReader(args.in());
          PrintWriter out = new PrintWriter(new BufferedWriter(args.out()))) {
-      ParsedList parsed = parser.parse(in);
-      parsed.compositions().forEach(composition -> composition.print(out));
+      compositionFinder.findCompositions(in).forEach(out::println);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
   private static void showCharsets() {
-    Map<String, Charset> cs = Charset.availableCharsets();
-    for (Map.Entry<String, Charset> e : cs.entrySet()) {
-      System.out.printf("%s%n", e.getKey());
-    }
+    Charset.availableCharsets().keySet().forEach(System.out::println);
   }
 }

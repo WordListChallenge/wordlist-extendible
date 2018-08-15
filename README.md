@@ -1,6 +1,6 @@
 ### Building and running
 
-* Create an executable jar (Java 9 required):
+* Create an executable jar:
 
         mvn clean package
 

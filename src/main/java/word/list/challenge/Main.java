@@ -1,26 +1,14 @@
 package word.list.challenge;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import net.jbock.*;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.OptionalInt;
-import net.jbock.CommandLineArguments;
-import net.jbock.Description;
-import net.jbock.LongName;
-import net.jbock.Positional;
-import net.jbock.ShortName;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Main {
 
@@ -92,8 +80,7 @@ public class Main {
   }
 
   public static void main(String[] args) {
-    Main_Args_Parser.parse(args, System.err)
-        .ifPresentOrElse(Main::run, () -> System.exit(1));
+    run(Main_Args_Parser.create().parseOrExit(args));
   }
 
   private static void run(Args args) {

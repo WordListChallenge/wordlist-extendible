@@ -1,8 +1,21 @@
 package word.list.challenge;
 
-import net.jbock.*;
+import net.jbock.CommandLineArguments;
+import net.jbock.Description;
+import net.jbock.LongName;
+import net.jbock.Positional;
+import net.jbock.ShortName;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -15,7 +28,7 @@ public class Main {
   private static final int DEFAULT_LENGTH = 6;
 
   @CommandLineArguments(
-      ignoreDashes = true,
+      strict = false,
       programName = "wordlist",
       missionStatement = "write dictionary words of given length as concatenations")
   abstract static class Args {

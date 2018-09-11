@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -58,24 +59,25 @@ public class Main {
     @LongName("input-charset")
     @Description({"The charset of the input dictionary.",
         "Defaults to UTF-8."})
-    abstract Optional<String> inputCharset();
+    abstract Optional<Charset> inputCharset();
 
     @LongName("output-charset")
     @Description({"The charset of the output stream.",
         "Defaults to UTF-8."})
-    abstract Optional<String> outputCharset();
+    abstract Optional<Charset> outputCharset();
 
     @LongName("list-charsets")
     @Description("List available charsets.")
     abstract boolean charsets();
 
     Reader in() throws IOException {
-      Charset charset = inputCharset().map(Charset::forName).orElse(UTF_8);
+      Charset charset = inputCharset().orElse(UTF_8);
       if (isStdin()) {
         return new InputStreamReader(System.in, charset);
       }
       return new InputStreamReader(new FileInputStream(
-          Paths.get(source().orElse("-")).toFile()), charset);
+          source().map(Paths::get).map(Path::toFile).orElseThrow(AssertionError::new)),
+          charset);
     }
 
     private boolean isStdin() {
@@ -83,7 +85,7 @@ public class Main {
     }
 
     Writer out() throws IOException {
-      Charset charset = outputCharset().map(Charset::forName).orElse(UTF_8);
+      Charset charset = outputCharset().orElse(UTF_8);
       String out = output().orElse("-");
       if ("-".equals(out)) {
         return new OutputStreamWriter(System.out, charset);

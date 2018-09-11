@@ -22,7 +22,7 @@
 
 * Reading from stdin:
 
-        echo -e "foo\nbar\nfoobar" | java -jar target/wordlist.jar -
+        echo -e "foo\nbar\nfoobar" | java -jar target/wordlist.jar
 
 * Using a different input encoding:
 

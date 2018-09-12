@@ -1,10 +1,8 @@
 package word.list.challenge;
 
 import net.jbock.CommandLineArguments;
-import net.jbock.Description;
-import net.jbock.LongName;
-import net.jbock.Positional;
-import net.jbock.ShortName;
+import net.jbock.Parameter;
+import net.jbock.PositionalParameter;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -34,40 +32,50 @@ public class Main {
       missionStatement = "write dictionary words of given length as concatenations")
   abstract static class Args {
 
-    @Positional
-    @Description({"The source of the dictionary words.",
-        "The source must be UTF-8 encoded and contain one word per line.",
-        "A single dash '-' denotes standard in.",
-        "Any other token will be interpreted as a file name."
-    })
+    /**
+     * The source of the dictionary words.
+     * The source must contain one word per line.
+     * A single dash '-' denotes standard in.
+     * Any other token will be interpreted as a file name.
+     */
+    @PositionalParameter
     abstract Optional<String> source();
 
-    @Positional
-    @Description({"Output stream for writing.",
-        "A single dash '-' denotes standard out.",
-        "Any other token will be interpreted as a file name.",
-        "Defaults to standard out."})
+    /**
+     * Output stream for writing.
+     * A single dash '-' denotes standard out.
+     * Any other token will be interpreted as a file name.
+     * Defaults to standard out.
+     */
+    @PositionalParameter
     abstract Optional<String> output();
 
-    @ShortName('n')
-    @LongName("")
-    @Description({"The length of the words that we're ",
-        "trying to write as concatenations.",
-        "Defaults to 6"})
+    /**
+     * The length of the words that we're
+     * trying to write as concatenations.
+     * Defaults to 6
+     */
+    @Parameter(shortName = 'n', longName = "")
     abstract OptionalInt length();
 
-    @LongName("input-charset")
-    @Description({"The charset of the input dictionary.",
-        "Defaults to UTF-8."})
+    /**
+     * The charset of the input dictionary.
+     * Defaults to UTF-8.
+     */
+    @Parameter(longName = "input-charset")
     abstract Optional<Charset> inputCharset();
 
-    @LongName("output-charset")
-    @Description({"The charset of the output stream.",
-        "Defaults to UTF-8."})
+    /**
+     * The charset of the output stream.
+     * Defaults to UTF-8.
+     */
+    @Parameter(longName = "output-charset")
     abstract Optional<Charset> outputCharset();
 
-    @LongName("list-charsets")
-    @Description("List available charsets.")
+    /**
+     * List available charsets.
+     */
+    @Parameter(longName = "list-charsets")
     abstract boolean charsets();
 
     Reader in() throws IOException {

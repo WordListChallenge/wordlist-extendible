@@ -27,7 +27,7 @@ public class Main {
   private static final int DEFAULT_LENGTH = 6;
 
   @CommandLineArguments(
-      strict = false,
+      allowPrefixedTokens = true,
       programName = "wordlist",
       missionStatement = "write dictionary words of given length as concatenations")
   abstract static class Args {
@@ -38,7 +38,7 @@ public class Main {
      * A single dash '-' denotes standard in.
      * Any other token will be interpreted as a file name.
      */
-    @PositionalParameter
+    @PositionalParameter(optional = true)
     abstract Optional<String> source();
 
     /**
@@ -47,7 +47,7 @@ public class Main {
      * Any other token will be interpreted as a file name.
      * Defaults to standard out.
      */
-    @PositionalParameter
+    @PositionalParameter(optional = true, position = 1)
     abstract Optional<String> output();
 
     /**
@@ -55,27 +55,27 @@ public class Main {
      * trying to write as concatenations.
      * Defaults to 6
      */
-    @Parameter(shortName = 'n', longName = "")
+    @Parameter(optional = true, shortName = 'n', longName = "")
     abstract OptionalInt length();
 
     /**
      * The charset of the input dictionary.
      * Defaults to UTF-8.
      */
-    @Parameter(longName = "input-charset")
+    @Parameter(optional = true, longName = "input-charset")
     abstract Optional<Charset> inputCharset();
 
     /**
      * The charset of the output stream.
      * Defaults to UTF-8.
      */
-    @Parameter(longName = "output-charset")
+    @Parameter(optional = true, longName = "output-charset")
     abstract Optional<Charset> outputCharset();
 
     /**
      * List available charsets.
      */
-    @Parameter(longName = "list-charsets")
+    @Parameter(flag = true, longName = "list-charsets")
     abstract boolean charsets();
 
     Reader in() throws IOException {
